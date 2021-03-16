@@ -1,0 +1,56 @@
+---
+version: '3.5'
+services:
+    tdarr:
+      image: haveagitgat/tdarr
+      container_name: tdarr
+      hostname: tdarr
+      restart: unless-stopped
+      environment:
+        serverIP: tdarr
+        serverPort: '8266'
+        webUIPort: '8265'
+        TZ: 'Europe/Zurich'
+        PUID: '1000'
+        PGID: '1000'
+      ports:
+        - '8266:8266'
+        - '8265:8265'
+      volumes:
+        - './volumes/tdarr/app/server:/app/server'
+        - '/tank/data/media/cache:/temp'
+        - '/tank/data/media/movies:/home/Tdarr/Media/movies'
+        - '/tank/data/media/tvshows:/home/Tdarr/Media/tvshows'
+      networks:
+        default:
+
+    tdarr_node:
+      image: haveagitgat/tdarr_node
+      container_name: tdarr_node
+      hostname: tdarr_node
+      restart: unless-stopped
+      environment:
+        nodeID: 'MainNode'
+        serverIP: tdarr
+        serverPort: '8266'
+        nodeIP: tdarr_node
+        nodePort: '8267'
+        TZ: Europe/Zurich
+        PUID: '1000'
+        PGID: '1000'
+      ports:
+        - '8267:8267'
+      volumes:
+        - '/tank/data/media/cache:/temp'
+        - '/tank/data/media/movies:/home/Tdarr/Media/movies'
+        - '/tank/data/media/tvshows:/home/Tdarr/Media/tvshows'
+      networks:
+        default:
+
+networks:
+  default:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.79.0/24

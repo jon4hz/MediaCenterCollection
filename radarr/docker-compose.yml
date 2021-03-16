@@ -1,0 +1,31 @@
+---
+version: '3.5'
+services:
+  radarr:
+    image: ghcr.io/linuxserver/radarr
+    container_name: radarr
+    hostname: radarr
+    environment:
+      PUID: '1000'
+      PGID: '1000'
+      TZ: Europe/Zurich
+    volumes:
+      - './volumes:/config'
+      - '/tank/data/media/movies:/movies'
+      - '/tank/data/downloads/complete:/downloads'
+      - '/tank/data/downloads/complete:/config/Downloads/complete'
+    ports:
+      - '7878:7878'
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:7878/']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    networks:
+      sabnzbd_default:
+    
+networks:
+  sabnzbd_default:
+    external: true

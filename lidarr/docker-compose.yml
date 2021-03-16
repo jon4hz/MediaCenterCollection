@@ -1,0 +1,31 @@
+---
+version: '3.5'
+services:
+  lidarr:
+    image: ghcr.io/linuxserver/lidarr
+    container_name: lidarr
+    hostname: lidarr
+    environment:
+      PUID: '1000'
+      PGID: '1000'
+      TZ: Europe/Zurich
+    volumes:
+      - ./volumes/config:/config'
+      - '/tank/data/media/music:/music'
+      - '/tank/data/downloads/complete:/downloads'
+      - '/tank/data/downloads/complete:/config/Downloads/complete'
+    ports:
+      - '8686:8686'
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8686/"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      sabnzbd_default:
+
+networks:
+  sabnzbd_default:
+    external: true

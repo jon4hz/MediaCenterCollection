@@ -1,0 +1,24 @@
+---
+version: '3.5'
+services:
+  overseerr:
+    image: sctx/overseerr
+    container_name: overseerr
+    hostname: overseerr
+    restart: unless-stopped
+    environment:
+      LOG_LEVEL: info
+      TZ: Europe/Zurich
+    volumes:
+      - './volumes/overseerr/app/config:/app/config'
+    ports:
+      - '5055:5055'
+    networks:
+      sabnzbd_default:
+      plex_monitor:
+
+networks:
+  sabnzbd_default:
+    external: true
+  plex_monitor:
+    external: true

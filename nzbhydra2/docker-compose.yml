@@ -1,0 +1,29 @@
+---
+version: '3.5'
+services:
+  nzbhydra2:
+    image: ghcr.io/linuxserver/nzbhydra2
+    container_name: nzbhydra2
+    hostname: nzbhydra2
+    environment:
+      PUID: '1000'
+      PGID: '1000'
+      TZ: Europe/Zurich
+    volumes:
+      - './volumes/nzbhydra2/config:/config'
+      - '/tank/data/downloads/complete:/downloads'
+    ports:
+      - '5076:5076'
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5076/"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      sabnzbd_default:
+
+networks:
+  sabnzbd_default:
+    external: true

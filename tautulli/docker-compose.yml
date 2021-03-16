@@ -1,0 +1,29 @@
+---
+version: '3.5'
+services:
+  tautulli:
+    image: ghcr.io/linuxserver/tautulli
+    container_name: tautulli
+    hostname: tautulli
+    environment:
+      PUID: '1000'
+      PGID: '1000'
+      TZ: Europe/Zurich
+    volumes:
+      - './volumes/config/:/config/'
+      - '/storage/data/docker-volumes/plex/config/Library/Application Support/Plex Media Server/Logs/:/logs/'
+    ports:
+      - '8181:8181'
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:8181/']
+      interval: 10s
+      retries: 5
+      timeout: 5s
+      start_period: 5s
+    networks:
+      plex_monitor:
+      
+networks:
+  plex_monitor:
+    external: true

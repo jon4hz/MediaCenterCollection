@@ -1,0 +1,31 @@
+---
+version: '3.5'
+services:
+  sonarr:
+    image: ghcr.io/linuxserver/sonarr:preview
+    container_name: sonarr
+    hostname: sonarr
+    environment:
+      PUID: '1000'
+      PGID: '1000'
+      TZ: Europe/Zurich
+    volumes:
+      - './volumes/config:/config'
+      - '/tank/data/media/tvshows:/tv'
+      - '/tank/data/downloads/complete:/downloads'
+      - '/tank/data/downloads/complete:/config/Downloads/complete'
+    ports:
+      - '8989:8989'
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:8989/']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    networks:
+      sabnzbd_default:
+
+networks:
+  sabnzbd_default:
+    external: true

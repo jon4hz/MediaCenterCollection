@@ -1,0 +1,33 @@
+---
+version: '3.5'
+services:
+  sabnzbd:
+    image: ghcr.io/linuxserver/sabnzbd
+    container_name: sabnzbd
+    hostname: sabnzbd
+    restart: unless-stopped
+    environment:
+      PUID: '1000'
+      GUID: '1000'
+      TZ: Europe/Zurich
+    volumes:
+      - './volumes/sabnzbd/config:/config'
+      - '/tank/data/downloads:/config/Downloads/'
+    ports:
+      - '8097:8080'
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      default:
+
+networks:
+  default:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.73.0/24

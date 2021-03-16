@@ -1,0 +1,28 @@
+---
+version: '3.5'
+services:
+  ombi:
+    image: ghcr.io/linuxserver/ombi
+    container_name: ombi
+    hostname: ombi
+    environment:
+      PUID: '1000'
+      PGID: '1000'
+      TZ: Europe/Zurich
+    volumes:
+      - './volumes/config:/config'
+    ports:
+      - '3579:3579'
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3579/"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      sabnzbd_default:
+
+networks:
+  sabnzbd_default:
+    external: true
